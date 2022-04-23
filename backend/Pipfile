@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "==0.75.1"
+uvicorn = "==0.17.6"
+attrs = "*"
+motor = "==2.5.1"
+python-multipart = "*"
+
+[dev-packages]
+pylint = "*"
+
+[requires]
+python_version = "3.9"
