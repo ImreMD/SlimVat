@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 fake_users_db = {
     "johndoe": {
@@ -16,6 +17,18 @@ fake_users_db = {
         "hashed_password": "fakehashedsecret2",
     },
 }
+
+#Security class#########################
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+
+
 
 class User(BaseModel):
     username: str
