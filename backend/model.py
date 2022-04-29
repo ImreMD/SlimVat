@@ -28,8 +28,6 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 
-
-
 class User(BaseModel):
     username: str
     email: str
