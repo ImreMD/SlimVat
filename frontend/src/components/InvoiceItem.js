@@ -19,16 +19,16 @@ export default function InvoiceItem(props) {
     return (
 
         <div key={props.invoiceItem.invoice_nbr} onClick={() => selectItem(props.InvoiceItem.invoice_nbr)} >
-            <p >
+            <div >
                 <span style={{ fontWeight: 'bold, underline'}}> {props.invoiceItem.invoice_nbr} : {props.invoiceItem.description}
                 <button onClick={() => deleteToDoHandler(props.invoiceItem.invoice_nbr) }
                 className='btn btn-outline-danger my-2 mx-2' style={
-                    {'borderRadius':'50px', } }> Delete </button>
+                    {'borderRadius':'50px', } }> check </button>
                 </span>
                 <hr></hr>
                 
 
-            </p>
+            </div>
 
 
         </div>

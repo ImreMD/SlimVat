@@ -1,10 +1,9 @@
-
-import './App.css';
-
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import InvoiceViewList from './components/InvoiceListView';
+import Register from './components/Register'
+import useAuth from "./hooks/useAuth";
 
 function App() {
 
@@ -13,15 +12,36 @@ function App() {
   const [desc, setDesc] = useState('')
   const [cust, setCust] = useState('')
   const [vat, setVat] = useState(false)
+  const {auth, logFlag} = useAuth();
+  //var logged = false
+  const headers_auth = {'Authorization': `Bearer ${auth.accessToken}`};
 
+    const body = {
+      key: "value"
+   };
   //Read all invoices
-  useEffect( ()=> {
-     axios.get('http://localhost:8000/api/invoices')
+  useEffect( 
+    ()=> {
+    
+    try {
+          console.log(`token: ${auth.accessToken}`);
+          axios({
+                  method: 'get',
+                  url: 'http://localhost:8000/api/invoices',
+                  data: body,
+                  headers : headers_auth                 
+                
+                })
      .then(res => {  
-       //console.log(res.data) 
+       //console.log('received token back:')
+       console.log(res.data) 
        setInvoiceList(res.data);
-     })
-   });
+     });
+
+  } catch(err) {
+    console.log(err.response)
+  }
+},[logFlag]);
 
   //Create an invoice
   const addTodoHandler = () => {
@@ -31,8 +51,14 @@ function App() {
     ))
   };
 
+
   return (
-    <div className='App list-group-item justify-content-center
+    <div>
+      {
+      (logFlag) ? 
+      (
+    
+      <div className='App list-group-item justify-content-center
       align-items-center mx-auto' style={{"width":"400px",
       "backgroundColor":"white", "marginTop":"15px"}}>
 
@@ -73,9 +99,22 @@ function App() {
         <InvoiceViewList invoiceList= {invoiceList} /> 
             
       </div>
-    </div>
-  
-  );
-}
+      </div>
+      ) : (
 
+      
+
+      <main>
+       
+      <Register /> 
+      
+      </main>
+
+    
+
+    )}
+</div>
+
+  )
+    }
 export default App;

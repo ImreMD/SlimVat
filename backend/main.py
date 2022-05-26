@@ -1,9 +1,13 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import HTTPException
+
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+
 #Oauth2 & hash ############################################
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -129,8 +133,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 # End points###############################
 
 @app.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()): #: OAuth2PasswordRequestForm = Depends()):
     #return user ot not user
+    print(f'payload username: {form_data.username} payload password: {form_data.password}')
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -143,7 +148,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    json_compatible_item_data = jsonable_encoder({"access_token": access_token, "token_type": "Bearer"})
+    print(json_compatible_item_data)
+    return JSONResponse(content=json_compatible_item_data)
 
 
 @app.get("/users/me", response_model=User)
@@ -158,16 +165,11 @@ async def get_token_info(token: str = Depends(oauth2_scheme)):
     expiry_date:str = datetime.utcfromtimestamp(expires)
     return {"user": username, "token" : token, "expiry token": expiry_date}
 
-
-
-@app.get("/")
-def read_root():
-    return 'please login'
-
 @app.get("/api/invoices")
 async def get_invoice(current_user: User = Depends(get_current_active_user)):
     response = await fetch_all_invoices()
-    return [{"item_id": "Foo", "owner": current_user.username}] #response
+    return [{"invoice_nbr": "KFVR/000001/22", "description": "ZIKO"},
+            {"invoice_nbr": "KFVR/000002/22", "description": "ZIKO"}] #response
 
 @app.get("/api/invoice{invoice_nbr}", response_model=Invoice)
 async def get_invoice_by_id(invoice_nbr):
