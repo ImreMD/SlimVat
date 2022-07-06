@@ -39,7 +39,7 @@ class User(BaseModel):
     email: str
     customer_repr: str
     disabled: bool
-
+    hashed_password: str
 
 class UserInDB(User):
     hashed_password: str

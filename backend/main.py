@@ -21,6 +21,7 @@ from jose import JWTError, jwt
 #Internal import###########################################
 from model import Invoice, User, UserInDB, fake_users_db, fake_invoices_db, Token, TokenData
 from database import (
+    fetch_user,
     fetch_one_invoice,
     fetch_all_invoices,
     fetch_users_invoices,
@@ -70,8 +71,9 @@ def get_password_hashed(password):
 
 #User identifier utilities################
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
+async def authenticate_user(username: str, password: str):
+    user = User(**(await fetch_user(username)))
+    
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -138,7 +140,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()): #: OAuth2PasswordRequestForm = Depends()):
     #return user ot not user
     print(f'payload username: {form_data.username} payload password: {form_data.password}')
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

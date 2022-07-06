@@ -65,8 +65,8 @@ function App() {
       <h1 className='card text-white bg-primary mb-1'
       stylename='max-width: 20rem;'> Slim VAT Manager</h1>
 
-      <h6 className='card text-white bg-primary mb-3'> FASTAPI - React
-      - MongoDB </h6>
+      <h6 className='card text-white bg-primary mb-3'> User - {auth.user}
+      </h6>
 
       <div className='card-body'>
         <h5 className='card text-white bg-dark mb-3'> Add your Invoice</h5>
