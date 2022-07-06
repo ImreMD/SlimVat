@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from http.client import responses
+from typing import List, Optional, List
 
 from fastapi import Depends, FastAPI, HTTPException, status, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,11 +19,12 @@ from jose import JWTError, jwt
 
 
 #Internal import###########################################
-from model import Invoice, User, UserInDB, fake_users_db, Token, TokenData
+from model import Invoice, User, UserInDB, fake_users_db, fake_invoices_db, Token, TokenData
 from database import (
     fetch_one_invoice,
     fetch_all_invoices,
-    create_invoice,
+    fetch_users_invoices,
+    insert_invoice,
     update_invoice,
     remove_invoice
 )
@@ -165,11 +167,11 @@ async def get_token_info(token: str = Depends(oauth2_scheme)):
     expiry_date:str = datetime.utcfromtimestamp(expires)
     return {"user": username, "token" : token, "expiry token": expiry_date}
 
-@app.get("/api/invoices")
+@app.get("/api/invoices")#, response_model= List(Invoice))
 async def get_invoice(current_user: User = Depends(get_current_active_user)):
-    response = await fetch_all_invoices()
-    return [{"invoice_nbr": "KFVR/000001/22", "description": "ZIKO"},
-            {"invoice_nbr": "KFVR/000002/22", "description": "ZIKO"}] #response
+    response, responses =  await fetch_users_invoices(current_user.customer_repr)
+    print(responses)
+    return  responses
 
 @app.get("/api/invoice{invoice_nbr}", response_model=Invoice)
 async def get_invoice_by_id(invoice_nbr):
@@ -178,14 +180,16 @@ async def get_invoice_by_id(invoice_nbr):
         return response
     raise HTTPException(404, f"There is no invioce with this title {invoice_nbr}")
 
-@app.post("/api/invoice", response_model = Invoice)
+@app.post("/api/invoice") #no response_model, response_model = Invoice)
 async def post_invoice(invoice: Invoice):
-    response = await create_invoice(invoice.dict())
-    if response:
-        return response
+    response = await insert_invoice(invoice.dict())
+    #response from database.py  b:create_invoice_return
+    print(f'record inserted: {response["acknowledged"]}')
+    if response["acknowledged"]:
+        return response["inserted_id"]
     raise HTTPException(400, f"Something went wrong / Bad request")
 
-@app.put("/api/invoice{invoice_nbr}", response_model = Invoice)
+@app.put("/api/invoice{invoice_nbr}") #no response_model, response_model = Invoice)
 async def put_invoice(invoice_nbr: str, desc: str, cust: str, vat_st: str):
     response = await update_invoice(invoice_nbr, desc, cust, vat_st)
     if response:

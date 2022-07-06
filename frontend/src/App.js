@@ -15,7 +15,7 @@ function App() {
   const {auth, logFlag} = useAuth();
   //var logged = false
   const headers_auth = {'Authorization': `Bearer ${auth.accessToken}`};
-
+  
     const body = {
       key: "value"
    };
@@ -63,7 +63,7 @@ function App() {
       "backgroundColor":"white", "marginTop":"15px"}}>
 
       <h1 className='card text-white bg-primary mb-1'
-      stylename='max-width: 20rem;'> List Manager</h1>
+      stylename='max-width: 20rem;'> Slim VAT Manager</h1>
 
       <h6 className='card text-white bg-primary mb-3'> FASTAPI - React
       - MongoDB </h6>
@@ -91,7 +91,7 @@ function App() {
             {addTodoHandler}> Add Invoice</button>
                  
         </span>
-        <h5 className='card text-white bg-dark mb-3'> Your Tasks</h5>
+        <h5 className='card text-white bg-dark mb-3'> Your Invoices</h5>
       </div>
 
       <div>
@@ -101,8 +101,6 @@ function App() {
       </div>
       </div>
       ) : (
-
-      
 
       <main>
        

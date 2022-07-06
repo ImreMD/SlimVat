@@ -1,30 +1,65 @@
 import axios from  'axios';
-import React from 'react';
+import { useEffect} from "react";
+
+
 
 export default function InvoiceItem(props) {
 
-    const selectItem = (invoice_nbr) => {
+    const [listInvoice, setListInvoice] = [...props.manageList];
 
-        var selected = ""
-        selected = "Selected invoices : " + invoice_nbr
-        console.log(selected )
+    useEffect( ()=> { console.log('Updated state', listInvoice)}, [listInvoice]);
+
+
+    const selectItem = (invoice_nbr, checkedStatus) => {
+    
         
 
+        if (checkedStatus) {
+
+            setListInvoice([...listInvoice, invoice_nbr])
+            // setListInvoice((state) => {console.log(state); return state; });
+            // console.log(getListInvoice()); 
+
+        } else {
+
+            setListInvoice([...listInvoice.filter(invoice => (invoice !== invoice_nbr))])
+            // setListInvoice((state) => {console.log(state); return state; });
+
+            
+        }
+
+        
+        
+            
     }
 
-    const deleteToDoHandler = (invoice_nbr) => {
-        console.log(invoice_nbr)
+    const deleteToDoHandler = ({invoice_nbr}) => {
+        
         axios.delete('http://localhost:8000/api/invoice/'+ invoice_nbr).then(res =>
         console.log(res.data))}
     return (
 
-        <div key={props.invoiceItem.invoice_nbr} onClick={() => selectItem(props.InvoiceItem.invoice_nbr)} >
-            <div >
-                <span style={{ fontWeight: 'bold, underline'}}> {props.invoiceItem.invoice_nbr} : {props.invoiceItem.description}
-                <button onClick={() => deleteToDoHandler(props.invoiceItem.invoice_nbr) }
-                className='btn btn-outline-danger my-2 mx-2' style={
-                    {'borderRadius':'50px', } }> check </button>
-                </span>
+        <div>
+            <div key={props.invoiceItem.invoice_nbr}>
+                <label>
+                    
+                    <span style={{ fontWeight: 'bold, underline'}}> 
+                        {props.invoiceItem.invoice_nbr} : {props.invoiceItem.description}
+                    </span>
+                    <span>
+                        <input style = {{margin: '10px'}}
+                                type='checkbox'
+                                checked ={props.invoiceItem.status}
+                                //key= {(props.invoiceItem.invoice_nbr.split("/")[1])}
+                                onClick={(e) => {
+                                    selectItem(props.invoiceItem.invoice_nbr, e.target.checked)
+                                    
+                                    }
+                            }
+                                value= 'false'
+                        ></input>
+                    </span>
+                </label>
                 <hr></hr>
                 
 

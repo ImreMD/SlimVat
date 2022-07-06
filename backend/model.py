@@ -18,6 +18,11 @@ fake_users_db = {
     },
 }
 
+fake_invoices_db = [
+            {"invoice_nbr": "KFVR/000001/22", "description": "invoice_1", "customer":"ZIKO", "vat_status": False },
+            {"invoice_nbr": "KFVR/000002/22", "description": "invoice_2", "customer":"ZIKO", "vat_status": False},
+            ]
+
 #Security class#########################
 
 class Token(BaseModel):
@@ -27,6 +32,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
+#User class#########################
 
 class User(BaseModel):
     username: str
@@ -38,11 +44,14 @@ class User(BaseModel):
 class UserInDB(User):
     hashed_password: str
 
+#Invioce class#########################
+
 class Invoice(BaseModel):
+    
     invoice_nbr: str
     description: str
     customer: str
     vat_status: bool
 
-    class Config:
-        orm_mode = True
+class Config:
+    orm_mode = True
