@@ -1,9 +1,9 @@
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import InvoiceViewList from './components/InvoiceListView';
 import Register from './components/Register'
 import useAuth from "./hooks/useAuth";
+import Content from './components/Content';
 
 function App() {
 
@@ -15,14 +15,13 @@ function App() {
   const {auth, logFlag} = useAuth();
   //var logged = false
   const headers_auth = {'Authorization': `Bearer ${auth.accessToken}`};
-  
-    const body = {
+  const body = {
       key: "value"
    };
   //Read all invoices
   useEffect( 
     ()=> {
-      var newLocalList = [{}];
+      
     try {
           console.log(`token: ${auth.accessToken}`);
           axios({
@@ -40,9 +39,7 @@ function App() {
   } catch(err) {
     console.log(err.response)
   }
-}
-
-,[logFlag]);
+},[logFlag]);
 
   //Create an invoice
   const addTodoHandler = () => {
@@ -97,7 +94,8 @@ function App() {
 
       <div>
             {/*  listofinvoices */}
-        <InvoiceViewList invoiceList= {invoiceList} /> 
+        <Content invoiceList= {invoiceList}
+                 setInvoiceList = {setInvoiceList} /> 
             
       </div>
       </div>

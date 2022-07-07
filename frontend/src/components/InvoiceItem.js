@@ -1,37 +1,14 @@
 import axios from  'axios';
-import { useEffect} from "react";
-
-
+//import { useEffect} from "react";
 
 export default function InvoiceItem(props) {
 
-    const [listInvoice, setListInvoice] = [...props.manageList];
+    //const [listInvoice, setListInvoice] = [...props.manageList];
 
-    useEffect( ()=> { console.log('Updated state', listInvoice)}, [listInvoice]);
+    //useEffect( ()=> { console.log('Updated state', listInvoice)}, [listInvoice]);
 
 
-    const selectItem = (invoice_nbr, checkedStatus) => {
     
-        
-
-        if (checkedStatus) {
-
-            setListInvoice([...listInvoice, invoice_nbr])
-            // setListInvoice((state) => {console.log(state); return state; });
-            // console.log(getListInvoice()); 
-
-        } else {
-
-            setListInvoice([...listInvoice.filter(invoice => (invoice !== invoice_nbr))])
-            // setListInvoice((state) => {console.log(state); return state; });
-
-            
-        }
-
-        
-        
-            
-    }
 
     const deleteToDoHandler = ({invoice_nbr}) => {
         
@@ -45,15 +22,17 @@ export default function InvoiceItem(props) {
                 <label>
                     
                     <span style={{ fontWeight: 'bold, underline'}}> 
-                        {props.invoiceItem.invoice_nbr} : {props.invoiceItem.description} : {props.invoiceItem.vat_status}
+                        {props.invoiceItem.invoice_nbr} : {props.invoiceItem.description}
                     </span>
                     <span>
                         <input style = {{margin: '10px'}}
                                 type='checkbox'
                                 checked = {props.invoiceItem.vat_status}
+                                onChange = {()=> props.handleCheck(props.invoiceItem.invoice_nbr)}
                                 //key= {(props.invoiceItem.invoice_nbr.split("/")[1])}
                                 onClick={(e) => {
-                                    selectItem(props.invoiceItem.invoice_nbr, e.target.checked)
+                                    console.log(e);
+                                    props.selectItem(props.invoiceItem.invoice_nbr, e.target.checked)
                                     
                                     }
                             }
