@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from http.client import responses
 from typing import List, Optional, List
 
-from fastapi import Depends, FastAPI, HTTPException, status, Form
+from fastapi import Depends, FastAPI, HTTPException, status, Form, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import HTTPException
 
@@ -27,6 +27,7 @@ from database import (
     fetch_users_invoices,
     insert_invoice,
     update_invoice,
+    update_invoices,
     remove_invoice
 )
 #------------------------------------------------------------------------------------#
@@ -172,7 +173,7 @@ async def get_token_info(token: str = Depends(oauth2_scheme)):
 @app.get("/api/invoices")#, response_model= List(Invoice))
 async def get_invoice(current_user: User = Depends(get_current_active_user)):
     response, responses =  await fetch_users_invoices(current_user.customer_repr)
-    print(responses)
+    #print(responses)
     return  responses
 
 @app.get("/api/invoice{invoice_nbr}", response_model=Invoice)
@@ -190,6 +191,12 @@ async def post_invoice(invoice: Invoice):
     if response["acknowledged"]:
         return response["inserted_id"]
     raise HTTPException(400, f"Something went wrong / Bad request")
+
+@app.put("/api/invoices") 
+async def put_invoices(invoices = Body(default=None)):
+    print(f'body is : {invoices["invoices_send"]}')
+    await update_invoices(invoices["invoices_send"])
+    return {'response':'invoices received'}
 
 @app.put("/api/invoice{invoice_nbr}") #no response_model, response_model = Invoice)
 async def put_invoice(invoice_nbr: str, desc: str, cust: str, vat_st: str):

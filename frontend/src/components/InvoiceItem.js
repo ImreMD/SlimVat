@@ -37,6 +37,7 @@ export default function InvoiceItem(props) {
         
         axios.delete('http://localhost:8000/api/invoice/'+ invoice_nbr).then(res =>
         console.log(res.data))}
+
     return (
 
         <div>
@@ -44,12 +45,12 @@ export default function InvoiceItem(props) {
                 <label>
                     
                     <span style={{ fontWeight: 'bold, underline'}}> 
-                        {props.invoiceItem.invoice_nbr} : {props.invoiceItem.description}
+                        {props.invoiceItem.invoice_nbr} : {props.invoiceItem.description} : {props.invoiceItem.vat_status}
                     </span>
                     <span>
                         <input style = {{margin: '10px'}}
                                 type='checkbox'
-                                checked ={props.invoiceItem.status}
+                                checked = {props.invoiceItem.vat_status}
                                 //key= {(props.invoiceItem.invoice_nbr.split("/")[1])}
                                 onClick={(e) => {
                                     selectItem(props.invoiceItem.invoice_nbr, e.target.checked)

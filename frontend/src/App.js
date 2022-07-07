@@ -22,7 +22,7 @@ function App() {
   //Read all invoices
   useEffect( 
     ()=> {
-    
+      var newLocalList = [{}];
     try {
           console.log(`token: ${auth.accessToken}`);
           axios({
@@ -33,15 +33,16 @@ function App() {
                 
                 })
      .then(res => {  
-       //console.log('received token back:')
-       console.log(res.data) 
-       setInvoiceList(res.data);
+     setInvoiceList(res.data);
+      
      });
 
   } catch(err) {
     console.log(err.response)
   }
-},[logFlag]);
+}
+
+,[logFlag]);
 
   //Create an invoice
   const addTodoHandler = () => {

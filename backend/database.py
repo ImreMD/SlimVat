@@ -62,5 +62,8 @@ async def remove_invoice(inv_nbr):
     result = await collection_invoices.delete_one({"title": inv_nbr})
     return result.deleted_count
 
-
+async def update_invoices(invoices):
+    result = await collection_invoices.update_many({ "invoice_nbr": { "$in": invoices }}, {"$set":{"vat_status": True}})
+    print('matched %d, modified %d' %
+        (result.matched_count, result.modified_count))
 
